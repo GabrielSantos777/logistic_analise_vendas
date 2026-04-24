@@ -5,7 +5,7 @@ function App() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    api.get("/api")
+    api.get("/")
       .then(res => setMsg(res.data.message))
       .catch(() => setMsg("Erro ao conectar com backend"));
   }, []);
