@@ -23,7 +23,7 @@ function barColor(index) {
 export default function TopCustomers({ data }) {
   return (
     <div className={styles.card}>
-      <h3 className={styles.title}>10 principais clientes por receita</h3>
+      <h3 className={styles.title}>Top 10 clientes por receita</h3>
 
       <ResponsiveContainer width="100%" height={280}>
         <BarChart
