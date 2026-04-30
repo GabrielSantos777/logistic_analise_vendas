@@ -1,0 +1,132 @@
+/* Layout principal do painel */
+
+.page {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: var(--space-xl);
+  font-family: var(--font-sans);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
+  gap: var(--space-md);
+}
+
+.title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: var(--space-xs);
+}
+
+.subtitle {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-teal);
+  box-shadow: 0 0 8px var(--color-teal);
+}
+
+.liveLabel {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.errorBanner {
+  background: color-mix(in srgb, var(--color-red) 15%, transparent);
+  color: #ffd2d2;
+  border: 1px solid color-mix(in srgb, var(--color-red) 40%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.kpiRow {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-md);
+}
+
+.gridWideNarrow {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.gridHalf {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.gridFull {
+  margin-bottom: var(--space-md);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-card) 25%,
+    #22223a 50%,
+    var(--color-card) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--radius-lg);
+  animation: shimmer 1.5s infinite;
+}
+
+.skeletonKpi {
+  flex: 1 1 180px;
+  min-width: 180px;
+}
+
+.footer {
+  color: var(--color-border);
+  font-size: 11px;
+  text-align: center;
+  margin-top: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .gridWideNarrow {
+    grid-template-columns: 1fr;
+  }
+
+  .gridHalf {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: var(--space-lg);
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

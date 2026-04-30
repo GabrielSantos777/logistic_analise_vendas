@@ -1,0 +1,40 @@
+/* Estilo base de cartao compartilhado pelos graficos */
+
+.card {
+  background: linear-gradient(135deg, var(--color-card), var(--color-card-deep));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+}
+
+.title {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+}
+
+.tooltip {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.tooltipLabel {
+  color: var(--color-muted);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.tooltipValue {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tooltipMeta {
+  color: var(--color-muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
