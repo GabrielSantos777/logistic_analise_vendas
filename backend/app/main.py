@@ -1,78 +1,106 @@
+from os import getenv
+
 from fastapi import Depends, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.data_service import (
-    load_data,
-    get_kpis,
     apply_filters,
-    get_revenue_by_month,
-    get_top_products,
+    get_filter_options,
+    get_kpis,
     get_revenue_by_category,
-    get_top_customers,
+    get_revenue_by_month,
     get_sales_by_country,
-    get_filter_options
+    get_top_customers,
+    get_top_products,
+    load_data,
 )
 
-app = FastAPI(title="Sales Dashboard Logistic", description="Dashboard de Vendas Logistic")
-
-origins = [
+# Origens permitidas por padrao para ambiente local.
+DEFAULT_ORIGINS = (
+    "http://localhost:5173",
+    "http://localhost:3000",
     "http://localhost:8080",
-]
+    "http://127.0.0.1:8080",
+)
+
+
+def get_allowed_origins() -> list[str]:
+    """Le ALLOWED_ORIGINS e retorna uma lista valida para CORS."""
+    raw_origins = getenv("ALLOWED_ORIGINS", "")
+    parsed_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+    return parsed_origins or list(DEFAULT_ORIGINS)
+
+
+app = FastAPI(
+    title="API de Analise de Vendas",
+    description="API para consultas analiticas de vendas a partir de uma base CSV.",
+    version="1.1.0",
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=get_allowed_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-def common_filters (
-    start_date: str | None = Query(None, description="Formato: YYYY-MM-DD"),
-    end_date: str | None = Query(None, description="Formato: YYYY-MM-DD"),
-    category: str | None = Query(None, description="Ex: Classic Cars"),
-    country: str | None = Query(None, description="Ex: USA"),
-):
+
+def get_filters(
+    start_date: str | None = Query(None, description="Data inicial no formato YYYY-MM-DD"),
+    end_date: str | None = Query(None, description="Data final no formato YYYY-MM-DD"),
+    category: str | None = Query(None, description="Linha de produto, ex: Classic Cars"),
+    country: str | None = Query(None, description="Pais, ex: USA"),
+) -> dict[str, str | None]:
+    """Padroniza os filtros recebidos na query string."""
     return {
         "start_date": start_date,
         "end_date": end_date,
         "category": category,
-        "country": country
+        "country": country,
     }
 
-@app.get("/api")
-def read_root():
-    return {"message": "Bem-vindo ao meu projeto!"}
 
-@app.get("/api/kpis")
-def kpis(filters: dict = Depends(common_filters)):
-    df = apply_filters(load_data().copy(), **filters)
-    return get_kpis(df)
+def get_filtered_df(filters: dict[str, str | None] = Depends(get_filters)):
+    """Aplica filtros sobre uma copia do DataFrame em cache."""
+    return apply_filters(load_data().copy(), **filters)
 
-@app.get("/api/revenue-by-month")
-def revenue_by_month(filters: dict = Depends(common_filters)):
-    df = apply_filters(load_data().copy(), **filters)
-    return get_revenue_by_month(df)
 
-@app.get("/api/top-products")
-def top_products(filters: dict = Depends(common_filters)):
-    df = apply_filters(load_data().copy(), **filters)
-    return get_top_products(df)
+@app.get("/api", tags=["Saude"])
+def health_check() -> dict[str, str]:
+    return {"status": "ok", "version": "1.1.0"}
 
-@app.get("/api/revenue-by-category")
-def revenue_by_category(filters: dict = Depends(common_filters)):
-    df = apply_filters(load_data().copy(), **filters)
-    return get_revenue_by_category(df)
 
-@app.get("/api/top-customers")
-def top_customers(filters: dict = Depends(common_filters)):
-    df = apply_filters(load_data().copy(), **filters)
-    return get_top_customers(df)
-
-@app.get("/api/sales-by-country")
-def sales_by_country(filters: dict = Depends(common_filters)):
-    df = apply_filters(load_data().copy(), **filters)
-    return get_sales_by_country(df)
-
-@app.get("/api/filter-options")
+@app.get("/api/filter-options", tags=["Filtros"])
 def filter_options():
     return get_filter_options(load_data().copy())
+
+
+@app.get("/api/kpis", tags=["Analiticos"])
+def kpis(df=Depends(get_filtered_df)):
+    return get_kpis(df)
+
+
+@app.get("/api/revenue-by-month", tags=["Analiticos"])
+def revenue_by_month(df=Depends(get_filtered_df)):
+    return get_revenue_by_month(df)
+
+
+@app.get("/api/top-products", tags=["Analiticos"])
+def top_products(df=Depends(get_filtered_df)):
+    return get_top_products(df)
+
+
+@app.get("/api/revenue-by-category", tags=["Analiticos"])
+def revenue_by_category(df=Depends(get_filtered_df)):
+    return get_revenue_by_category(df)
+
+
+@app.get("/api/top-customers", tags=["Analiticos"])
+def top_customers(df=Depends(get_filtered_df)):
+    return get_top_customers(df)
+
+
+@app.get("/api/sales-by-country", tags=["Analiticos"])
+def sales_by_country(df=Depends(get_filtered_df)):
+    return get_sales_by_country(df)
