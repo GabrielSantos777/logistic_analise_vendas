@@ -88,21 +88,6 @@ cd frontend
 npm install
 npm run dev
 ```
-
-## Variaveis de ambiente
-
-Backend (`backend/.env`):
-
-```env
-ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
-```
-
-Frontend (`frontend/.env`):
-
-```env
-VITE_API_URL=http://localhost:8000
-```
-
 ## API
 
 Endpoints principais:
@@ -134,9 +119,3 @@ Filtros aceitos pelos endpoints analiticos:
 - Layout responsivo com ajustes para desktop e mobile.
 - Tratamento de erro na UI com alerta amigavel ao usuario.
 
-## Proximos passos
-
-- Adicionar testes unitarios para `backend/app/data_service.py`
-- Adicionar testes de interface para fluxos de filtro no frontend
-- Evoluir de CSV estatico para banco relacional (ex.: PostgreSQL)
-- Incluir pipeline de CI para lint e build automatizados
