@@ -15,31 +15,16 @@ from app.data_service import (
     load_data,
 )
 
-# Origens permitidas por padrao para ambiente local.
-DEFAULT_ORIGINS = (
-    "http://localhost:5173",
-    "http://localhost:3000",
+app = FastAPI()
+
+origins = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
-)
-
-
-def get_allowed_origins() -> list[str]:
-    """Le ALLOWED_ORIGINS e retorna uma lista valida para CORS."""
-    raw_origins = getenv("ALLOWED_ORIGINS", "")
-    parsed_origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
-    return parsed_origins or list(DEFAULT_ORIGINS)
-
-
-app = FastAPI(
-    title="API de Analise de Vendas",
-    description="API para consultas analiticas de vendas a partir de uma base CSV.",
-    version="1.1.0",
-)
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=get_allowed_origins(),
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
